@@ -43,7 +43,7 @@ library:
 executables:
   fp2025-one:
     main:                Main.hs
-    source-dirs:         app1
+    source-dirs:         app2
     ghc-options:
     - -rtsopts
     dependencies:

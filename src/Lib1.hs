@@ -1,6 +1,11 @@
 module Lib1
-    ( examples, Command(..), Action(..)
-    ) where
+  ( examples
+  , Command(..)
+  , Action(..)
+  , Dribbleresult(..)
+  , Card(..)
+  , Dumpable(..)
+  ) where
 
 
 data Dumpable = Examples
@@ -10,11 +15,13 @@ data Dumpable = Examples
 
 data Action
     = Pass String String     
-    | Dribble String [Dribbleresult]         
-    | Foul String String (Maybe Card)   
+    | Dribble String Dribbleresult         
+    | Foul String String 
+    | HardFoul String String Card 
     | Shot String            
     | Goal String String
-    | Steal String            
+    | Steal String 
+    | CompositeAction [Action]           
     deriving Show
 
 data Dribbleresult = Success | Fail  deriving Show
@@ -35,18 +42,13 @@ examples :: [Command]
 examples =
     [ Enter "Messi"
     , Enter "Di María"
-    , Enter "Mbappé"
     , Play "Messi"
         [ Pass "Messi" "Di María"
-        , Shot "Di María"
-        , Goal "Di María" "Messi"
+        , CompositeAction
+            [ Dribble "Di María" Success
+            , Shot "Di María"
+            , Goal "Di María" "Messi"
+            ]
         ]
-    , Substitution "Mbappé" "Griezmann"
-    , Play "Messi"
-        [ Pass "Messi" "Griezmann"
-        , Goal "Griezmann" "Messi"
-        ]
-    , ShowActivePlayers
     , ShowStats "Messi"
-    , Dump Examples
     ]

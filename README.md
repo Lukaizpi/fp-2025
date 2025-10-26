@@ -71,7 +71,8 @@ This DSL allows describing the sequence of events of a football match in a struc
            | " foul " <string> " on " <string> 
            | " shot " <string>
            | " goal " <string> " assisted-by " <string>
-           | " steal " <string> " from " <string>
+           | " steal " <string> "
+           | " compositeAction is " <action>
 
 <dribbleresult> ::= "succeed" | "failed"
 
