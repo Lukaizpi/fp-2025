@@ -41,14 +41,14 @@ data Card = Yellow | Red deriving Show
 examples :: [Command]
 examples =
     [ Enter "Messi"
-    , Enter "Di María"
+    , Enter "Di Maria"
     , Play "Messi"
-        [ Pass "Messi" "Di María"
+        [ Pass "Messi" "Di Maria"
         , CompositeAction
-            [ Dribble "Di María" Success
-            , Shot "Di María"
-            , Goal "Di María" "Messi"
+            [Shot "Di Maria"
+            , Goal "Di Maria" "Messi"
             ]
         ]
     , ShowStats "Messi"
     ]
+

@@ -63,7 +63,7 @@ This DSL allows describing the sequence of events of a football match in a struc
 <play> ::= " play " <string> " with" <actions>
 
 <actions> ::= <action>
-            | <action> " and" <actions>
+            | <action> ", " <actions>
 
 <action> ::= " pass " <string> " to " <string>
            | " dribble " <string> " has " <dribbleresult>
@@ -72,7 +72,7 @@ This DSL allows describing the sequence of events of a football match in a struc
            | " shot " <string>
            | " goal " <string> " assisted-by " <string>
            | " steal " <string> "
-           | " compositeAction is " <action>
+           | " compositeAction " <action>
 
 <dribbleresult> ::= "succeed" | "failed"
 
