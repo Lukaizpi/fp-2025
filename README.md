@@ -60,7 +60,7 @@ This DSL allows describing the sequence of events of a football match in a struc
 
 <showactiveplayers> ::= " show active players "
 
-<play> ::= " play " <string> " with" <actions>
+<play> ::= " play " <string> <actions>
 
 <actions> ::= <action>
             | <action> ", " <actions>

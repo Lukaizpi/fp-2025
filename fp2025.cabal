@@ -28,11 +28,18 @@ library
       Lessons.Lesson02
       Lib1
       Lib2
+      Lib3
   hs-source-dirs:
       src
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
-      base >=4.7 && <5
+      QuickCheck
+    , async
+    , base >=4.7 && <5
+    , directory
+    , random
+    , stm
+    , transformers
   default-language: Haskell2010
 
 executable fp2025-one
@@ -42,12 +49,14 @@ executable fp2025-one
   autogen-modules:
       Paths_fp2025
   hs-source-dirs:
-      app2
+      app3
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -rtsopts
   build-depends:
-      base >=4.7 && <5
+      async
+    , base >=4.7 && <5
     , fp2025
     , repline
+    , stm
   default-language: Haskell2010
 
 test-suite fp2024-test
