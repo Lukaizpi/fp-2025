@@ -7,66 +7,88 @@ maintainer:          "example@example.com"
 copyright:           "2024 Author name here"
 
 extra-source-files:
-- README.md
-- CHANGELOG.md
+  - README.md
+  - CHANGELOG.md
 
-# Metadata used when publishing your package
-# synopsis:            Short description of your package
-# category:            Web
-
-# To avoid duplicated efforts in documentation and dealing with the
-# complications of embedding Haddock markup inside cabal files, it is
-# common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/githubuser/fp2024#readme>
+description:         Please see the README on GitHub at <https://github.com/githubuser/fp2025#readme>
 
 dependencies:
-- base >= 4.7 && < 5
+  - base >= 4.7 && < 5
 
 ghc-options:
-- -Wall
-- -Wcompat
-- -Widentities
-- -Wincomplete-record-updates
-- -Wincomplete-uni-patterns
-- -Wmissing-export-lists
-- -Wmissing-home-modules
-- -Wpartial-fields
-- -Wredundant-constraints
+  - -Wall
+  - -Wcompat
+  - -Widentities
+  - -Wincomplete-record-updates
+  - -Wincomplete-uni-patterns
+  - -Wmissing-export-lists
+  - -Wmissing-home-modules
+  - -Wpartial-fields
+  - -Wredundant-constraints
 
 library:
   source-dirs: src
-  dependencies: 
+  dependencies:
     - QuickCheck
     - random
     - stm
     - transformers
     - async
-    - directory 
-  when:
-  - condition: false
-    other-modules: Paths_fp2025
+    - directory
+    - network   # 👈 IMPORTANTE para socket/handle
+    - http-client
+    - http-client-tls
+    - bytestring
+    - http-types
+    - wai
+    - warp
 
 executables:
   fp2025-one:
-    main:                Main.hs
-    source-dirs:         app3
+    main: Main.hs
+    source-dirs: app3
     ghc-options:
-    - -rtsopts
+      - -rtsopts
     dependencies:
-    - fp2025
-    - repline
-    - stm
-    - async
+      - fp2025
+      - repline
+      - stm
+      - async
+
+  fp2025-server:
+    main: server/Main.hs
+    source-dirs: app4
+    dependencies:
+      - fp2025
+      - stm
+      - network
+      - transformers
+      - async
+      - warp
+      - wai
+      - http-types
+      - bytestring
+
+  fp2025-client:
+    main: client/Main.hs
+    source-dirs: app4
+    dependencies:
+      - fp2025
+      - network
+      - transformers
 
 tests:
-  fp2024-test:
-    main:                Spec.hs
-    source-dirs:         test
+  fp2025-test:
+    main: Spec.hs
+    source-dirs: test
     ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
     dependencies:
-    - fp2025
-    - tasty
-    - tasty-hunit
+      - fp2025
+      - tasty
+      - tasty-hunit
+      - tasty-quickcheck
+      - transformers
+      - stm

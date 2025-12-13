@@ -115,12 +115,16 @@ sepBy p sep s = case p s of
 
 between :: Parser open -> Parser a -> Parser close -> Parser a
 between open p close s = case open s of
-    Left e -> Left e
-    Right (_, rest) -> case p rest of
-        Left e2 -> Left e2
-        Right (x, rest2) -> case close rest2 of
-            Left e3 -> Left e3
-            Right (_, rest3) -> Right (x, rest3)
+  Left e -> Left e
+  Right (_, rest) ->
+    let rest' = dropWhile (== ' ') rest in
+    case p rest' of
+      Left e2 -> Left e2
+      Right (x, rest2) ->
+        let rest2' = dropWhile (== ' ') rest2 in
+        case close rest2' of
+          Left e3 -> Left e3
+          Right (_, rest3) -> Right (x, rest3)
 
 -- ========== DSL-specific parsers ==========
 

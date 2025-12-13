@@ -6,7 +6,7 @@ cabal-version: 2.2
 
 name:           fp2025
 version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/githubuser/fp2024#readme>
+description:    Please see the README on GitHub at <https://github.com/githubuser/fp2025#readme>
 homepage:       https://github.com/vipo/fp-2025#readme
 bug-reports:    https://github.com/vipo/fp-2025/issues
 author:         Author name here
@@ -29,6 +29,12 @@ library
       Lib1
       Lib2
       Lib3
+      Lib4
+      Lib4DSL
+  other-modules:
+      Paths_fp2025
+  autogen-modules:
+      Paths_fp2025
   hs-source-dirs:
       src
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
@@ -36,9 +42,32 @@ library
       QuickCheck
     , async
     , base >=4.7 && <5
+    , bytestring
     , directory
+    , http-client
+    , http-client-tls
+    , http-types
+    , network
     , random
     , stm
+    , transformers
+    , wai
+    , warp
+  default-language: Haskell2010
+
+executable fp2025-client
+  main-is: client/Main.hs
+  other-modules:
+      Paths_fp2025
+  autogen-modules:
+      Paths_fp2025
+  hs-source-dirs:
+      app4
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
+  build-depends:
+      base >=4.7 && <5
+    , fp2025
+    , network
     , transformers
   default-language: Haskell2010
 
@@ -59,7 +88,29 @@ executable fp2025-one
     , stm
   default-language: Haskell2010
 
-test-suite fp2024-test
+executable fp2025-server
+  main-is: server/Main.hs
+  other-modules:
+      Paths_fp2025
+  autogen-modules:
+      Paths_fp2025
+  hs-source-dirs:
+      app4
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
+  build-depends:
+      async
+    , base >=4.7 && <5
+    , bytestring
+    , fp2025
+    , http-types
+    , network
+    , stm
+    , transformers
+    , wai
+    , warp
+  default-language: Haskell2010
+
+test-suite fp2025-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
@@ -72,6 +123,9 @@ test-suite fp2024-test
   build-depends:
       base >=4.7 && <5
     , fp2025
+    , stm
     , tasty
     , tasty-hunit
+    , tasty-quickcheck
+    , transformers
   default-language: Haskell2010

@@ -1,6 +1,11 @@
 {-# OPTIONS_GHC -Wno-orphans #-}
 module Lib3(
-    emptyState, State(..), execute, load, save, storageOpLoop, StorageOp, Parser(..), parseCommand) where
+    emptyState, State(..), commands,
+    updateStatePure, getActivePlayers,
+    PlayerStats(..), updateStats,
+    execute, load, save, storageOpLoop,
+    StorageOp, Parser(..), parseCommand
+) where
 
 import qualified Lib1
 import Control.Concurrent.STM (TVar, readTVarIO, atomically, readTVar, writeTVar)
@@ -244,6 +249,19 @@ isMutating (Lib1.Substitution _ _) = True
 isMutating (Lib1.Play _ _)        = True
 isMutating _                      = False
 
+-- Tipo auxiliar para estadísticas de jugadores
+data PlayerStats = PlayerStats
+  { psActive    :: Bool
+  , psPasses    :: Int
+  , psShots     :: Int
+  , psGoals     :: Int
+  , psFouls     :: Int
+  , psDribbles  :: Int
+  , psSteals    :: Int
+  , psYellow    :: Int
+  , psRed       :: Int
+  }
+
 updateStatePure :: State -> Lib1.Command -> State
 updateStatePure (State cmds) cmd =
     if isMutating cmd
@@ -264,7 +282,7 @@ isPlayer st player = player `elem` getActivePlayers st
 -- Ejecuta un comando actualizando el estado y mostrando información si es necesario
 -- IMPLEMENTACIÓN CORREGIDA: usamos UNA llamada a atomically que devuelve un resultado puro
 -- para imprimir/desplegar después de la transacción.
-type ExecOutcome = Either String (Maybe (Either [String] (String, PlayerStats)))
+-- type ExecOutcome = Either String (Maybe (Either [String] (String, PlayerStats)))
 -- Left String => error message to print
 -- Right Nothing => no printing required
 -- Right (Just (Left [String])) => print list of lines (e.g., active players)
@@ -331,24 +349,26 @@ showStats stVar player = do
         statsWithActive = stats { psActive = player `elem` activePlayersList }
     printPlayerStats player statsWithActive
 
--- Tipo auxiliar para estadísticas de jugadores
-data PlayerStats = PlayerStats
-  { psActive    :: Bool
-  , psPasses    :: Int
-  , psShots     :: Int
-  , psGoals     :: Int
-  , psFouls     :: Int
-  , psDribbles  :: Int
-  , psSteals    :: Int
-  , psYellow    :: Int
-  , psRed       :: Int
-  }
+
 
 updateStats :: String -> PlayerStats -> Lib1.Command -> PlayerStats
-updateStats player stats cmd = case cmd of
-    Lib1.Play p actions | p == player ->
-        foldl updateAction stats actions
-    _ -> stats
+updateStats player stats (Lib1.Play p actions)
+    | p /= player = stats
+    | otherwise   = foldl updateAction stats actions
+  where
+    updateAction s (Lib1.Pass _ _)       = s { psPasses = psPasses s + 1 }
+    updateAction s (Lib1.Shot _)         = s { psShots = psShots s + 1 }
+    updateAction s (Lib1.Goal _ _)       = s { psGoals = psGoals s + 1 }
+    updateAction s (Lib1.Foul _ _)       = s { psFouls = psFouls s + 1 }
+    updateAction s (Lib1.Dribble _ _)    = s { psDribbles = psDribbles s + 1 }
+    updateAction s (Lib1.Steal _)        = s { psSteals = psSteals s + 1 }
+    updateAction s (Lib1.HardFoul _ _ Lib1.Yellow)
+                                         = s { psYellow = psYellow s + 1 }
+    updateAction s (Lib1.HardFoul _ _ Lib1.Red)
+                                         = s { psRed = psRed s + 1 }
+    updateAction s _                     = s
+updateStats _ stats _ = stats
+
 
 updateAction :: PlayerStats -> Lib1.Action -> PlayerStats
 updateAction stats action = case action of
